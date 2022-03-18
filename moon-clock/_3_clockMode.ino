@@ -1,38 +1,30 @@
 const float MOON_CYCLE_DURATION = 29.530588; // days
 
-//const unsigned long DAYS_TO_MS = 24L * 60L * 60L * 1000L;
-const unsigned long DAYS_TO_MS = 200L;
+const unsigned long DAYS_TO_MS = 24L * 60L * 60L * 1000L;
+//const unsigned long DAYS_TO_MS = 200L; // For debug
 
 const int MOON_PHASES = 8;
-const int DISPLAY_PRECISION = 4;
-
-const int PINS_START = 9;
 
 const float PHASE_DURATION = MOON_CYCLE_DURATION / MOON_PHASES;
 
+// In North hemisphere
 const int PHASES[MOON_PHASES][DISPLAY_PRECISION] = {
-  {LOW,LOW,LOW,LOW},
-  {LOW,LOW,LOW,HIGH},
-  {LOW,LOW,HIGH,HIGH},
-  {LOW,HIGH,HIGH,HIGH},
-  {HIGH,HIGH,HIGH,HIGH},
-  {HIGH,HIGH,HIGH,LOW},
-  {HIGH,HIGH,LOW,LOW},
-  {HIGH,LOW,LOW,LOW}
+  {LOW,LOW,LOW,LOW},        // New
+  {LOW,LOW,LOW,HIGH},       // Waxing Crescent
+  {LOW,LOW,HIGH,HIGH},      // First Quarter 
+  {LOW,HIGH,HIGH,HIGH},     // Waxing Gibbous
+  {HIGH,HIGH,HIGH,HIGH},    // Full
+  {HIGH,HIGH,HIGH,LOW},     // Waning Gibbous
+  {HIGH,HIGH,LOW,LOW},      // Third Quarter
+  {HIGH,LOW,LOW,LOW}        // Waning Crescent
 };
 
+void setupClock() {
+  debugln("Setup clock");
+}
 
 int currentPhase = 0;
 float startOffset = 0;
-
-void setupClock() {
-  
-  for(int i=0; i<DISPLAY_PRECISION; i++) {
-    pinMode(PINS_START + i, OUTPUT);
-    digitalWrite(PINS_START + i, LOW);
-  }
-  
-}
 
 void setClockStart(int startDay) { 
   currentPhase = floor(startDay / PHASE_DURATION);
@@ -48,10 +40,7 @@ void printPhase(int phase) {
   const int *phaseArray = PHASES[phase];
   
   for(int i=0; i<DISPLAY_PRECISION; i++) {
-    int pin = PINS_START + i;
-    int value = phaseArray[i];
-    
-    digitalWrite(pin, value);
+    lightOne(i, phaseArray[i]);
   }
   
 }
