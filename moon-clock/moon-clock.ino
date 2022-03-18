@@ -1,6 +1,8 @@
 
 /*       Moon Clock
  * 
+ * v2.0.0
+ * 
  * A clock with lights showing the current moon phase.
  * 
  * Starts in setup mode.
