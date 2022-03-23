@@ -1,9 +1,9 @@
 const float MOON_CYCLE_DURATION = 29.530588; // days
 
-//const unsigned long DAYS_TO_MS = 24L * 60L * 60L * 1000L;
-const unsigned long DAYS_TO_MS = 1000L; // For debug
+const unsigned long DAYS_TO_MS = 24L * 60L * 60L * 1000L;
+// const unsigned long DAYS_TO_MS = 500L; // For debug
 
-const int MOON_PHASES = 8;
+const byte MOON_PHASES = 8;
 
 const float PHASE_DURATION = MOON_CYCLE_DURATION / MOON_PHASES;
 
@@ -23,16 +23,19 @@ void setupClock() {
   debugln("Setup clock");
 }
 
-int currentPhase = 0;
+byte currentPhase = 0;
 unsigned long nextPhaseTime;
+// word nextPhaseTime_w;
 boolean overflowing = false;
 
 void initClock(int startDay) {  
   unsigned long now = millis();
+  // word now_w = word(now);
   
   float startOffset = fmod(startDay, PHASE_DURATION);
   currentPhase = floor(startDay / PHASE_DURATION);
   nextPhaseTime = now + (PHASE_DURATION - startOffset) * DAYS_TO_MS;
+  //nextPhaseTime_w = now_w + (PHASE_DURATION - startOffset) * DAYS_TO_MS;
   
   debug("Phase duration: "); debugln(String(PHASE_DURATION));
   debug("Start offset: "); debugln(String(startOffset));
@@ -41,7 +44,7 @@ void initClock(int startDay) {
 }
 
 void printPhase(int phase) {
-  debug("Phase: "); debugln(String(phase));
+  debug("-- Phase: "); debugln(String(phase));
   
   const int *phaseArray = PHASES[phase];
   
@@ -51,28 +54,34 @@ void printPhase(int phase) {
 }
 
 unsigned long lastTime = 0;
+// word lastTime_w = 0;
 
 void loopClock() {
   unsigned long now = millis();
+  // word now_w = word(now);
 
+  debug("now\t"); debugln(String(now));
+  debug("next\t"); debugln(String(nextPhaseTime));
+  debug("overflowing\t"); debugln(String(overflowing));
+  
   if(overflowing && lastTime > now) {
     overflowing = false;
+    debugln("overflow disabled");
   }
   
   lastTime = now;
+  // lastTime_w = now_w;
   
   if(!overflowing && now >= nextPhaseTime) {
     
     currentPhase = (currentPhase + 1) % MOON_PHASES;
     nextPhaseTime = nextPhaseTime + PHASE_DURATION * DAYS_TO_MS;
+    // nextPhaseTime_w = nextPhaseTime_w + PHASE_DURATION * DAYS_TO_MS;
     overflowing = nextPhaseTime < now;
-    
-    debugln(String(now));
-    debugln(String(nextPhaseTime));
     
     printPhase(currentPhase);
     
   } else {
-    delay(1000);
+    delay(300);
   }
 }

@@ -1,7 +1,7 @@
-const int PINS_START = 9;
-const int DISPLAY_PRECISION = 4;
+const byte PINS_START = 9;
+const byte DISPLAY_PRECISION = 4;
 
-const int MODE_SETTING = 0;
-const int MODE_CLOCK = 1;
+const byte MODE_SETTING = 0;
+const byte MODE_CLOCK = 1;
 
-const bool DEBUG = true;
+const bool DEBUG = false;

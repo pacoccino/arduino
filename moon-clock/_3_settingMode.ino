@@ -1,10 +1,10 @@
-const int PIN_SETTING = 2;
+const byte PIN_SETTING = 2;
 
-const int MAX_COUNTER = floor(MOON_CYCLE_DURATION);
+const word MAX_COUNTER = floor(MOON_CYCLE_DURATION);
 
-const int SETTING_TIMEOUT = 5 * 1000; // 5 seconds
+const word SETTING_TIMEOUT = 5 * 1000; // 5 seconds
 
-int settingCounter = 0;
+word settingCounter = 0;
 bool settingPristine = true;
 
 unsigned long lastSettingTime;

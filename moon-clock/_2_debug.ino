@@ -1,5 +1,3 @@
-const int baudRate = 9600;
-
 void setupDebug() {
   if(DEBUG) {
     Serial.begin(9600);

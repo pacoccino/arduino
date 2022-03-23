@@ -1,4 +1,4 @@
-int mode;
+byte mode;
 
 void setup() {
 
