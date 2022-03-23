@@ -1,7 +1,7 @@
 const float MOON_CYCLE_DURATION = 29.530588; // days
 
-const unsigned long DAYS_TO_MS = 24L * 60L * 60L * 1000L;
-//const unsigned long DAYS_TO_MS = 200L; // For debug
+//const unsigned long DAYS_TO_MS = 24L * 60L * 60L * 1000L;
+const unsigned long DAYS_TO_MS = 1000L; // For debug
 
 const int MOON_PHASES = 8;
 
@@ -24,36 +24,55 @@ void setupClock() {
 }
 
 int currentPhase = 0;
-float startOffset = 0;
+unsigned long nextPhaseTime;
+boolean overflowing = false;
 
-void setClockStart(int startDay) { 
+void initClock(int startDay) {  
+  unsigned long now = millis();
+  
+  float startOffset = fmod(startDay, PHASE_DURATION);
   currentPhase = floor(startDay / PHASE_DURATION);
-  startOffset = fmod(startDay, PHASE_DURATION);
-
+  nextPhaseTime = now + (PHASE_DURATION - startOffset) * DAYS_TO_MS;
+  
   debug("Phase duration: "); debugln(String(PHASE_DURATION));
-  debug("Current phase: "); debugln(String(currentPhase));
   debug("Start offset: "); debugln(String(startOffset));
+  
+  printPhase(currentPhase);
 }
 
 void printPhase(int phase) {
+  debug("Phase: "); debugln(String(phase));
   
   const int *phaseArray = PHASES[phase];
   
   for(int i=0; i<DISPLAY_PRECISION; i++) {
     lightOne(i, phaseArray[i]);
   }
-  
 }
 
+unsigned long lastTime = 0;
+
 void loopClock() {
+  unsigned long now = millis();
 
-  printPhase(currentPhase);
+  if(overflowing && lastTime > now) {
+    overflowing = false;
+  }
   
-  currentPhase = (currentPhase + 1) % MOON_PHASES;
-
-  unsigned long wait = (PHASE_DURATION - startOffset) * DAYS_TO_MS;
-  startOffset = 0;
+  lastTime = now;
   
-  delay(wait);
-  
+  if(!overflowing && now >= nextPhaseTime) {
+    
+    currentPhase = (currentPhase + 1) % MOON_PHASES;
+    nextPhaseTime = nextPhaseTime + PHASE_DURATION * DAYS_TO_MS;
+    overflowing = nextPhaseTime < now;
+    
+    debugln(String(now));
+    debugln(String(nextPhaseTime));
+    
+    printPhase(currentPhase);
+    
+  } else {
+    delay(1000);
+  }
 }

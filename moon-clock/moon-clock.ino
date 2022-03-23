@@ -15,7 +15,7 @@
  * 
  * For that, we define how many days have passed since the last new moon, and we press the button that much times.
  * Lights show the current value % 5
- * All lights on: 0
+ * External lights on: 0
  * Zero light: 5, 10, 15, 20, 25
  * One light: 1, 6, 11, 16, 21, 26
  * ...

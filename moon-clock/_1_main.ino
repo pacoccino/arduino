@@ -15,13 +15,11 @@ void setup() {
 
 void loop() {
   switch(mode) {
-    case MODE_SETTING: {
+    case MODE_SETTING: 
       loopSetting();
       break;
-    }
-    case MODE_CLOCK: {
+    case MODE_CLOCK: 
       loopClock();
       break;
-    }
   }
 }

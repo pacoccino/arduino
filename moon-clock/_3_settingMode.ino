@@ -15,7 +15,7 @@ void setupSetting() {
   pinMode(PIN_SETTING, INPUT_PULLUP);
   lastSettingTime = millis();
   strobo();
-  printSetting();
+  lightAll(HIGH);
 }
 
 void loopSetting() {
@@ -23,22 +23,26 @@ void loopSetting() {
   boolean buttonPressed = boolean(1-button);
 
   if(!settingPristine && (millis() - lastSettingTime) > SETTING_TIMEOUT) {
-    debugln("timeout settings");
+    debugln("Setup: timeout");
     
     strobo();
     
-    setClockStart(settingCounter);  
+    initClock(settingCounter);  
     mode = MODE_CLOCK;
 
     return;
   }
   
   if(buttonPressed) {
-    debugln("setup: button pressed");
-    
-    settingPristine = false;
-    settingCounter = (settingCounter + 1) % MAX_COUNTER;
+    debugln("Setup: button pressed");
     lastSettingTime = millis();
+
+    if(settingPristine) { // void first press to be able to set day 0
+      settingPristine = false;
+    } else {
+      settingCounter = (settingCounter + 1) % MAX_COUNTER;
+    }
+   
     printSetting();
     delay(200);
   }
@@ -49,7 +53,11 @@ void printSetting() {
   debug("Day: "); debugln(String(settingCounter));
     
   if(settingCounter == 0) {
-    lightAll(HIGH);
+    lightOne(0, HIGH);
+    lightOne(1, LOW);
+    lightOne(2, LOW);
+    lightOne(3, HIGH);
+    
   } else {
     lightAll(LOW);
     int off = settingCounter % (DISPLAY_PRECISION + 1);
