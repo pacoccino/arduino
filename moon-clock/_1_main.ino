@@ -6,6 +6,8 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
+  debugln("Setup");
+
   mode = MODE_SETTING;
   setupDebug();
   setupLight();

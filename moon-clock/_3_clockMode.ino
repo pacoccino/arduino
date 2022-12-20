@@ -29,6 +29,8 @@ unsigned long nextPhaseTime;
 boolean overflowing = false;
 
 void initClock(int startDay) {  
+  debugln("Init clock");
+  
   unsigned long now = millis();
   // word now_w = word(now);
   
@@ -37,16 +39,17 @@ void initClock(int startDay) {
   nextPhaseTime = now + (PHASE_DURATION - startOffset) * DAYS_TO_MS;
   //nextPhaseTime_w = now_w + (PHASE_DURATION - startOffset) * DAYS_TO_MS;
   
+ 
   debug("Phase duration: "); debugln(String(PHASE_DURATION));
   debug("Start offset: "); debugln(String(startOffset));
   
-  printPhase(currentPhase);
+  printPhase();
 }
 
-void printPhase(int phase) {
-  debug("-- Phase: "); debugln(String(phase));
+void printPhase() {
+  debug("-- Phase: "); debugln(String(currentPhase));
   
-  const int *phaseArray = PHASES[phase];
+  const int *phaseArray = PHASES[currentPhase];
   
   for(int i=0; i<DISPLAY_PRECISION; i++) {
     lightOne(i, phaseArray[i]);
@@ -60,9 +63,11 @@ void loopClock() {
   unsigned long now = millis();
   // word now_w = word(now);
 
+  /*
   debug("now\t"); debugln(String(now));
   debug("next\t"); debugln(String(nextPhaseTime));
   debug("overflowing\t"); debugln(String(overflowing));
+  */
   
   if(overflowing && lastTime > now) {
     overflowing = false;
@@ -78,8 +83,11 @@ void loopClock() {
     nextPhaseTime = nextPhaseTime + PHASE_DURATION * DAYS_TO_MS;
     // nextPhaseTime_w = nextPhaseTime_w + PHASE_DURATION * DAYS_TO_MS;
     overflowing = nextPhaseTime < now;
+    if(overflowing) { 
+      debugln("overflow caught");
+    }
     
-    printPhase(currentPhase);
+    printPhase();
     
   } else {
     delay(300);

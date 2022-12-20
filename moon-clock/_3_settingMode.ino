@@ -1,5 +1,3 @@
-const byte PIN_SETTING = 2;
-
 const word MAX_COUNTER = floor(MOON_CYCLE_DURATION);
 
 const word SETTING_TIMEOUT = 5 * 1000; // 5 seconds
@@ -10,7 +8,7 @@ bool settingPristine = true;
 unsigned long lastSettingTime;
 
 void setupSetting() {
-  debugln("Setup setting");
+  debugln("Setup settings");
   
   pinMode(PIN_SETTING, INPUT_PULLUP);
   lastSettingTime = millis();
@@ -19,22 +17,22 @@ void setupSetting() {
 }
 
 void loopSetting() {
-  int button = digitalRead(PIN_SETTING);
-  boolean buttonPressed = boolean(1-button);
-
   if(!settingPristine && (millis() - lastSettingTime) > SETTING_TIMEOUT) {
-    debugln("Setup: timeout");
+    debugln("Settings: timeout");
     
     strobo();
     
     initClock(settingCounter);  
     mode = MODE_CLOCK;
-
+    debugln("Clock mode");
+    
     return;
   }
   
+  int button = digitalRead(PIN_SETTING);
+  boolean buttonPressed = boolean(1-button);
   if(buttonPressed) {
-    debugln("Setup: button pressed");
+    debugln("Settings: button pressed");
     lastSettingTime = millis();
 
     if(settingPristine) { // void first press to be able to set day 0
